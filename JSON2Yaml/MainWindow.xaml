@@ -10,6 +10,7 @@
     Title="MainWindow"
     Width="1100"
     Height="650"
+    d:DataContext="{d:DesignInstance Type=local:MainViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
@@ -20,9 +21,6 @@
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <Window.DataContext>
-        <local:MainViewModel />
-    </Window.DataContext>
 
     <Behaviors:Interaction.Triggers>
         <Behaviors:EventTrigger EventName="Loaded">
@@ -46,31 +44,12 @@
             </ui:TitleBar.Icon>
         </ui:TitleBar>
         <Grid Grid.Row="1">
-            <StackPanel Orientation="Horizontal">
-                <RadioButton
-                    Margin="12"
-                    Command="{Binding SwitchCommand}"
-                    CommandParameter="QA"
-                    Content="QA"
-                    GroupName="GN" />
-                <RadioButton
-                    Margin="12"
-                    Command="{Binding SwitchCommand}"
-                    CommandParameter="TEST"
-                    Content="TEST"
-                    GroupName="GN" />
-                <RadioButton
-                    Margin="12"
-                    Command="{Binding SwitchCommand}"
-                    CommandParameter="RPOD"
-                    Content="RPOD"
-                    GroupName="GN" />
-                <RadioButton
-                    Margin="12"
-                    Command="{Binding SwitchCommand}"
-                    CommandParameter="DR"
-                    Content="DR"
-                    GroupName="GN" />
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <ui:Button Command="{Binding SwitchCommand}" Content="转换">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="ArrowCircleRight24" />
+                    </ui:Button.Icon>
+                </ui:Button>
             </StackPanel>
         </Grid>
 

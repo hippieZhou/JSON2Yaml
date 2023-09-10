@@ -1,14 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using JSON2Yaml.Services;
 using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.IO;
 
 namespace JSON2Yaml
 {
-    public class MainViewModel : ObservableObject
+    public partial class MainViewModel : ObservableObject
     {
+        private readonly IYamlService yamlService;
+
+        public MainViewModel(IYamlService yamlService)
+        {
+            this.yamlService = yamlService;
+        }
+
         private string json;
         public string Json
         {
@@ -40,7 +46,8 @@ namespace JSON2Yaml
             {
                 var openFileDialog = new OpenFileDialog()
                 {
-                    Filter = "(*.json)|*.json"
+                    Filter = "(*.json)|*.json",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
@@ -52,20 +59,7 @@ namespace JSON2Yaml
         public IRelayCommand SwitchCommand => switchCommand ??= new RelayCommand<object>(
             args =>
         {
-            var obj = JsonConvert.DeserializeObject<JObject>(json);
-            var a = ConvertJTokenToObject(obj);
-            Yaml = json;
+            Yaml = yamlService.ConvertFromJson(json);
         }, args => !string.IsNullOrWhiteSpace(Json));
-
-        static object ConvertJTokenToObject(JToken token)
-        {
-            if (token is JValue)
-                return ((JValue)token).Value;
-            if (token is JArray)
-                return token.AsEnumerable().Select(ConvertJTokenToObject).ToList();
-            if (token is JObject)
-                return token.AsEnumerable().Cast<JProperty>().ToDictionary(x => x.Name, x => ConvertJTokenToObject(x.Value));
-            throw new InvalidOperationException("Unexpected token: " + token);
-        }
     }
 }
